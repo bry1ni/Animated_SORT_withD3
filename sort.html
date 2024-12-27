@@ -2,100 +2,23 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TP3 Exo2</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Animated Bubble Sort</title>
+    <link rel="stylesheet" href="styles.css">
     <script src="https://d3js.org/d3.v5.min.js"></script>
 </head>
 <body>
+    <div class="container">
+        <h1>Bubble Sort Visualization</h1>
+        <div class="controls">
+            <label for="tailleTableau">Array Size:</label>
+            <input type="number" id="tailleTableau" min="1" value="20">
+            <button onclick="visualizeTableau()">Sort</button>
+        </div>
+        <div class="svg-container"></div>
+    </div>
 
-<label for="tailleTableau">Entrez taille tableau:</label>
-<input type="number" id="tailleTableau" min="1" value="20">
-<button onclick="visualizeTableau()">Exécuter</button>
-
-<script>
-    function bubblesort(array) {
-        const transitions = [];
-
-        function swap(i, j) {
-            var t = array[i];
-            array[i] = array[j];
-            array[j] = t;
-        }
-
-        function bubble() {
-            var swaped = false;
-            do {
-                swaped = false;
-                for (var i = 1; i < array.length; ++i) {
-                    if (array[i - 1] > array[i]) {
-                        swap(i - 1, i);
-                        transitions.push([...array]); // Save a copy of the array for each swap
-                        swaped = true;
-                    }
-                }
-            } while (swaped);
-        }
-
-        bubble();
-        return transitions;
-    }
-
-    function visualizeTableau() {
-        const tailleTableau = parseInt(document.getElementById('tailleTableau').value, 10);
-        const tableauInitial = Array.from({ length: tailleTableau }, () => Math.floor(Math.random() * 10) + 1);
-
-        const svg = d3.select("body").select("svg");
-        if (svg) {
-            svg.remove(); // Remove the existing SVG if it exists
-        }
-
-        const newSvg = d3.select("body").append("svg")
-            .attr("width", 100 * tailleTableau)
-            .attr("height", 150);
-
-        const transitions = bubblesort([...tableauInitial]);
-
-        transitions.forEach((t, index) => {
-            setTimeout(() => {
-                updateBars(newSvg, t, index === transitions.length - 1);
-            }, index * 1000); // Adjust the duration as needed
-        });
-    }
-
-    function updateBars(svg, data, isFinalTransition) {
-        const bars = svg.selectAll("rect")
-            .data(data);
-
-        bars.exit().remove(); // Remove any extra bars
-
-        bars.enter()
-            .append("rect")
-            .merge(bars)
-            .transition()
-            .duration(500)
-            .attr("x", (d, i) => i * 100)
-            .attr("y", d => 100 - d * 10)
-            .attr("width", 50)
-            .attr("height", d => d * 10)
-            .attr("fill", isFinalTransition ? "Green" : "Red");
-
-        // Add text labels below each bar
-        const labels = svg.selectAll("text")
-            .data(data);
-
-        labels.exit().remove(); // Remove any extra labels
-
-        labels.enter()
-            .append("text")
-            .merge(labels)
-            .attr("x", (d, i) => i * 100 + 25)
-            .attr("y", 120)
-            .attr("text-anchor", "middle")
-            .text(d => d);
-    }
-
-</script>
-
+    <script src="script.js"></script>
 </body>
 </html>
